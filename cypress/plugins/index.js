@@ -24,10 +24,19 @@ module.exports = (on, config) => {
   // `config` is the resolved Cypress config
 
   if (config.testingType === "component") {
-    on("dev-server:start", options =>
+    if (!webpackConfig.resolve) {
+      webpackConfig.resolve = {};
+    }
+
+    webpackConfig.resolve.alias = {
+      ...(webpackConfig.resolve.alias || {}),
+      vue$: "vue/dist/vue.esm-bundler.js",
+    };
+
+    on("dev-server:start", (options) =>
       startDevServer({
         options,
-        webpackConfig
+        webpackConfig,
       })
     );
   }
